@@ -10,6 +10,7 @@ resource "aws_vpc" "wp-vpc" {
         Name = "wp-vpc"
     }
 }
+
 # Create public subnet
 resource "aws_subnet" "public-subnet-1a" {
     vpc_id = "${aws_vpc.wp-vpc.vpc_id}"
@@ -19,6 +20,7 @@ resource "aws_subnet" "public-subnet-1a" {
     tags = {
         Name = "Public Subnet"
     }
+}
 
 # Create private subnet
 resource "aws_subnet" "private-subnet-1a" {
@@ -29,5 +31,4 @@ resource "aws_subnet" "private-subnet-1a" {
     tags = {
         Name = "Private Subnet - Application Servers"
     }
-  
 }
