@@ -1,7 +1,8 @@
 provider "aws" {
   profile = "default"
-  region = "us-east-1"
+  region = var.region
 }
+
 resource "aws_launch_template" "asg_example" {
   name          = "asg_example"
   image_id      = "ami-2757f631"
