@@ -83,12 +83,51 @@ resource "aws_subnet" "private-data-1b" {
 ##############################################################
 ##############################################################
 
+resource "aws_eip_association" "nat-eip-association-1a" {
+    instance_id = "${aws_nat_gateway.nat-gateway-1b.id}"
+    allocation_id = "${aws_eip.nat-eip-1b.id}"
+}
+
+# Create Elastic IP address and associate with NAT Gateway - 1a
+resource "aws_eip" "nat-eip-1a" {
+    vpc = true
+    tags = {
+        Name = "elastic-ip-1a"
+    }
+}
+
+# Create NAT Gateway with Elastic IP address - 1a
+resource "aws_nat_gateway" "nat-gateway-1a" {
+    allocation_id = "${aws_eip.nat-eip-1a.id}"
+    subnet_id = "${aws_subnet.public-global-1a.id}"
+    tags = {
+        Name = "NAT Gateway 1b"
+    }
+}
+
+# Create Internet Gateway - 1a
+resource "aws_internet_gateway" "internet-gateway-1a" {
+    vpc_id = "${aws_vpc.wp-vpc.id}"
+    tags = {
+        Name = "Internet Gateway 1a"
+    }
+}
+
+resource "aws_route_table" "route-table-a" {
+    vpc_id = "${aws_vpc.wp-vpc.id}"
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = "${aws_internet_gateway.internet-gateway-1a.id}"
+    }
+    tags = {
+        Name = "Route Table AZ-A"
+    }
+}
+
 resource "aws_eip_association" "nat-eip-association-1b" {
     instance_id = "${aws_nat_gateway.nat-gateway-1b.id}"
     allocation_id = "${aws_eip.nat-eip-1b.id}"
-    tags = {
-        Name = "NAT-EIP Association 1a"
-    }
 }
 
 # Create Elastic IP address and associate with NAT Gateway - 1b
@@ -113,5 +152,17 @@ resource "aws_internet_gateway" "internet-gateway-1b" {
     vpc_id = "${aws_vpc.wp-vpc.id}"
     tags = {
         Name = "Internet Gateway 1b"
+    }
+}
+
+resource "aws_route_table" "route-table-b" {
+    vpc_id = "${aws_vpc.wp-vpc.id}"
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = "${aws_internet_gateway.internet-gateway-1b.id}"
+    }
+    tags = {
+        Name = "Route Table AZ-B"
     }
 }
