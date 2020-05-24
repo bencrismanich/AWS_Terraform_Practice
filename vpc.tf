@@ -80,6 +80,17 @@ resource "aws_subnet" "private-data-1b" {
     }
 }
 
+##### SUBNET GROUP FOR DATABASE #####
+
+resource "aws_db_subnet_group" "data-tier-subnets" {
+  name       = "data-tier-subnets"
+  subnet_ids = ["${aws_subnet.private-data-1a.id}", "${aws_subnet.private-data-1b.id}"]
+
+  tags = {
+    Name = "Data Tier Subnets"
+  }
+}
+
 ##############################################################
 ################### EIP resource #################
 ##############################################################
